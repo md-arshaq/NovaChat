@@ -41,6 +41,38 @@ export const api = {
     }
   },
 
+  /**
+   * Upload FormData (for file uploads).
+   * Does NOT set Content-Type — browser auto-sets multipart/form-data with boundary.
+   */
+  async upload(endpoint, formData) {
+    const url = `${BASE_URL}${endpoint}`;
+    const sessionId = localStorage.getItem('sessionId');
+
+    const headers = {};
+    if (sessionId) {
+      headers['x-session-id'] = sessionId;
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers,
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Upload failed');
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Upload Error:', error);
+      throw error;
+    }
+  },
+
   post(endpoint, body, options = {}) {
     return this.request(endpoint, { ...options, method: 'POST', body });
   },

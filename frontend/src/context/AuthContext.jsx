@@ -8,6 +8,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState({ bio: '', avatar_url: '' });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     if (sessionId && username) {
       setUser({ username, sessionId });
       connectSocket(sessionId);
+      fetchProfile();
     }
     setLoading(false);
 
@@ -38,6 +40,31 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const fetchProfile = async () => {
+    try {
+      const data = await api.get('/api/users/me');
+      if (data.success) {
+        setProfile({
+          bio: data.profile.bio || '',
+          avatar_url: data.profile.avatar_url || '',
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch profile:', error);
+    }
+  };
+
+  const updateProfile = async (formData) => {
+    const data = await api.upload('/api/users/profile', formData);
+    if (data.success) {
+      setProfile({
+        bio: data.profile.bio || '',
+        avatar_url: data.profile.avatar_url || '',
+      });
+    }
+    return data;
+  };
+
   const login = async (username, password) => {
     try {
       const data = await api.post('/api/auth/login', { username, password });
@@ -46,6 +73,8 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('username', data.username);
         setUser({ username: data.username, sessionId: data.sessionId });
         connectSocket(data.sessionId);
+        // Fetch profile after login
+        setTimeout(() => fetchProfile(), 100);
         return { success: true };
       }
     } catch (error) {
@@ -77,16 +106,20 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('sessionId');
       localStorage.removeItem('username');
       setUser(null);
+      setProfile({ bio: '', avatar_url: '' });
       socket.disconnect();
     }
   };
 
   const value = {
     user,
+    profile,
     loading,
     login,
     signup,
-    logout
+    logout,
+    updateProfile,
+    fetchProfile,
   };
 
   return (

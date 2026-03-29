@@ -3,6 +3,8 @@ require('dotenv').config();
 
 const express = require('express');
 const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const { Server } = require('socket.io');
 const cors = require('cors');
 
@@ -14,6 +16,10 @@ const initializeSocket = require('./socket/socketHandler');
 const authRoutes = require('./routes/auth');
 const chatRoutes = require('./routes/chat');
 const userRoutes = require('./routes/users');
+
+// ─── Ensure upload directories exist ────────────────────────
+const uploadsDir = path.join(__dirname, 'uploads', 'avatars');
+fs.mkdirSync(uploadsDir, { recursive: true });
 
 // ─── App Setup ─────────────────────────────────────────────
 const app = express();
@@ -31,6 +37,9 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve uploaded files (profile images, etc.)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ─── Health Check ───────────────────────────────────────────
 app.get('/', (req, res) => {

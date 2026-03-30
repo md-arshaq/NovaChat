@@ -1,4 +1,4 @@
-# NGD Real-Time Chat 💬
+# NovaChat - Realtime Chat App 💬
 
 A blazing-fast, real-time web chat application built using the powerful combination of React, Node.js, Socket.IO, and Redis. It features intuitive global public chat rooms, direct private messaging, online status tracking, and cloud-hosted profile customization.
 
@@ -91,7 +91,7 @@ npm run dev
 
 ## 📁 Project Architecture Map
 ```text
-📦NGD
+📦NovaChat
  ┣ 📂backend
  ┃ ┣ 📂config        # Redis client initialization
  ┃ ┣ 📂controllers   # Core business logic (Auth, Chat, Users)
@@ -115,4 +115,4 @@ npm run dev
 
 ---
 
-*Authored for the NGD Chat Application natively running on Windows/Linux environments.*
+*Authored for the NovaChat Application natively running on Windows/Linux environments.*

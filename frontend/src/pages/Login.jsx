@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import chatLogo from '../assets/chat-logo.png';
+import chatLogo from '../assets/CHAT-LOGO.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');

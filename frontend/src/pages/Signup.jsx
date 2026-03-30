@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import chatLogo from '../assets/chat-logo.png';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -44,7 +45,7 @@ const Signup = () => {
     <div className="auth-container">
       <div className="auth-card glass-panel fade-in">
         <div className="auth-header">
-          <img src="/src/assets/chat-logo.png" alt="NGD Chat Logo" className="logo-icon" />
+          <img src={chatLogo} alt="NGD Chat Logo" className="logo-icon" />
           <h1>Create Account</h1>
           <p>Join NovaChat today!</p>
         </div>

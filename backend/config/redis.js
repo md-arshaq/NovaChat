@@ -4,10 +4,17 @@ const redis = require('redis');
 let clientOptions = {};
 
 if (process.env.REDIS_URL) {
-  clientOptions.url = process.env.REDIS_URL;
+  let redisUrl = process.env.REDIS_URL;
+
+  // Upstash provides `redis://` in some consoles but strictly requires TLS (`rediss://`)
+  if (redisUrl.includes('upstash.io') && redisUrl.startsWith('redis://')) {
+    redisUrl = redisUrl.replace('redis://', 'rediss://');
+  }
+
+  clientOptions.url = redisUrl;
   
   // If the URL uses rediss://, it requires TLS
-  if (process.env.REDIS_URL.startsWith('rediss://')) {
+  if (redisUrl.startsWith('rediss://')) {
     clientOptions.socket = {
       tls: true,
       rejectUnauthorized: false,

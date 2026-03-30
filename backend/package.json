@@ -1,5 +1,5 @@
 {
-  "name": "ngd-chat-backend",
+  "name": "novachat-backend",
   "version": "1.0.0",
   "description": "Real-time chat application backend using Redis",
   "main": "server.js",

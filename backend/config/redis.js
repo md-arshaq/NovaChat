@@ -1,12 +1,26 @@
 const redis = require('redis');
 
 // Create Redis client
-const client = redis.createClient({
-  socket: {
+let clientOptions = {};
+
+if (process.env.REDIS_URL) {
+  clientOptions.url = process.env.REDIS_URL;
+  
+  // If the URL uses rediss://, it requires TLS
+  if (process.env.REDIS_URL.startsWith('rediss://')) {
+    clientOptions.socket = {
+      tls: true,
+      rejectUnauthorized: false,
+    };
+  }
+} else {
+  clientOptions.socket = {
     host: process.env.REDIS_HOST || '127.0.0.1',
     port: parseInt(process.env.REDIS_PORT) || 6379,
-  },
-});
+  };
+}
+
+const client = redis.createClient(clientOptions);
 
 // Error handling
 client.on('error', (err) => {
@@ -30,7 +44,8 @@ const connectRedis = async () => {
     console.log(`✅ Redis PING → ${pong}`);
   } catch (err) {
     console.error('❌ Failed to connect to Redis:', err.message);
-    console.error('💡 Make sure Redis is running on', process.env.REDIS_HOST + ':' + process.env.REDIS_PORT);
+    const hostInfo = process.env.REDIS_URL || `${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
+    console.error(`💡 Make sure Redis is running on / properly configured at: ${hostInfo}`);
     process.exit(1);
   }
 };
